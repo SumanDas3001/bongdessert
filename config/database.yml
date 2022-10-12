@@ -16,5 +16,5 @@ development:
 production:
   <<: *default
   database: bongdessert_production
-  username: bongdessert
-  password: <%= ENV["BONGDESSERT_DATABASE_PASSWORD"] %>
+  username: deploy
+  password: nopass
