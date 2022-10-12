@@ -1,0 +1,20 @@
+default: &default
+  adapter: postgresql
+  encoding: unicode
+  # For details on connection pooling, see Rails configuration guide
+  # https://guides.rubyonrails.org/configuring.html#database-pooling
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
+
+development:
+  <<: *default
+  database: bongdessert_development
+  username: postgres
+  password: nopass
+  host: localhost
+
+
+production:
+  <<: *default
+  database: bongdessert_production
+  username: bongdessert
+  password: <%= ENV["BONGDESSERT_DATABASE_PASSWORD"] %>
