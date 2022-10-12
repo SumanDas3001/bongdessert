@@ -3,6 +3,7 @@ lock "~> 3.17.1"
 
 set :application, "bongdessert"
 set :repo_url, "git@github.com:SumanDas3001/bongdessert.git"
+set :branch, 'main'
 
 # Deploy to the user's home directory
 set :deploy_to, "/home/deploy/#{fetch :application}"
