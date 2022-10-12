@@ -13,8 +13,9 @@ development:
   host: localhost
 
 
+
 production:
   <<: *default
   database: bongdessert_production
   username: deploy
-  password: nopass
+  password: nopass 
