@@ -8,12 +8,16 @@ set :branch, 'main'
 # Deploy to the user's home directory
 set :deploy_to, "/home/deploy/#{fetch :application}"
 
+set :linked_files, %w{config/database.yml config/master.key}
 append :linked_dirs, 'log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'vendor/bundle', '.bundle', 'public/system', 'public/uploads', 'public/packs', 'node_modules'
 
 # Only keep the last 5 releases to save disk space
-set :keep_releases, 5
+set :keep_releases, 3
+set :keep_assets, 3
 
-set :passenger_restart_with_touch, true
+set :db_local_clean, true
+set :db_remote_clean, true
+# set :passenger_restart_with_touch, true
 
 # Default branch is :master
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
@@ -49,19 +53,20 @@ set :passenger_restart_with_touch, true
 # Uncomment the following to require manually verifying the host key before first deploy.
 # set :ssh_options, verify_host_key: :secure
 
-set :passenger_environment_variables, {
-  'PASSENGER_INSTANCE_REGISTRY_DIR' => '/var/run/passenger-instreg'
-}
+# set :passenger_environment_variables, {
+#   'PASSENGER_INSTANCE_REGISTRY_DIR' => '/var/run/passenger-instreg'
+# }
 
 
 before 'deploy:assets:precompile', 'deploy:yarn_install'
 namespace :deploy do
-  desc 'Run rake yarn install'
-  task :yarn_install do
-    on roles(:web) do
-      within release_path do
-        execute("cd #{release_path} && yarn install --silent --no-progress --no-audit --no-optional")
-      end
+  desc 'Restart application'
+  task :restart do
+    on roles(:app), in: :sequence, wait: 5 do
+      execute :touch, release_path.join('tmp/restart.txt')
     end
   end
+
+  after :publishing, 'deploy:restart'
+  after :finishing, 'deploy:cleanup'
 end
